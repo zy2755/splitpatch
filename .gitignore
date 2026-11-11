@@ -1,0 +1,21 @@
+# 签名私钥：绝不入库（本机 keystore 只用于本地覆盖安装）
+**/keystore/
+*.jks
+*.keystore
+*.idsig
+
+# 构建中间产物
+Android/build/
+__pycache__/
+*.py[cod]
+
+# 第三方 APK / 本地样本输出（版权、体积、含本机绝对路径）
+**/拆分结果/
+_mini*.apk
+_jvm_out/
+_icon_src/
+_make_icons.py
+_selftest*
+
+# 工作区元数据与个人记忆
+.workbuddy/
