@@ -1,5 +1,7 @@
 # 🌿 SplitPatch · 集成包拆分器
 
+> 🌐 **简体中文** · [English](README.en.md)
+
 ![应用图标](Android/app/res/mipmap-xxxhdpi/ic_launcher.png)
 
 > 把 **LSPatch / NPatch「集成模式（`--embed`）」**打包出来的 APK，拆成
@@ -166,3 +168,9 @@ python Android/build_apk.py
 ## 版本
 
 `v1.0.0` · 首次发布 · Windows GUI + 原生 Android App · 引擎 v1.0.0
+
+---
+
+## 许可证
+
+[MIT](LICENSE) · Copyright © 2026 zy2755
