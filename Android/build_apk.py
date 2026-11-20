@@ -38,6 +38,8 @@ APKSIGNER_JAR = BUILD_TOOLS / "lib" / "apksigner.jar"
 
 MIN_SDK = 26       # Android 8.0
 TARGET_SDK = 34    # 本地分发，避开 Android 15 强制 edge-to-edge 导致的标题遮挡
+VERSION_CODE = "2"   # 必须单调递增，否则手机上覆盖安装会失败
+VERSION_NAME = "1.1"
 STORE_PASS = "splitpatch-local"
 KEY_PASS = "splitpatch-local"
 
@@ -96,8 +98,8 @@ def main() -> int:
         "--java", gen_dir,
         "--min-sdk-version", MIN_SDK,
         "--target-sdk-version", TARGET_SDK,
-        "--version-code", "1",
-        "--version-name", "1.0",
+        "--version-code", VERSION_CODE,
+        "--version-name", VERSION_NAME,
     ], "aapt2 link")
 
     print("[3/9] 编译 Java 源码")

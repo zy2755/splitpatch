@@ -113,10 +113,10 @@ public class MainActivity extends Activity {
         // 选项卡片
         LinearLayout optCard = card();
         optCard.setOrientation(LinearLayout.VERTICAL);
-        chkInjected = check("一并导出注入组件（loader / so / config）", false);
-        chkManifest = check("同时导出 manifest.json 清单", true);
-        optCard.addView(chkInjected);
-        optCard.addView(chkManifest);
+        chkInjected = option(optCard, "一并导出注入组件（loader / so / config）",
+                "仅重新集成或研究补丁时需要；还原原版、单独用模块都用不到", false);
+        chkManifest = option(optCard, "同时导出 manifest.json 清单",
+                "记录来源、大小、SHA-256 与 CRC 校验，便于核对", true);
         box.addView(optCard, cardLp());
 
         btnSplit = button("② 开始拆分", true);
@@ -196,6 +196,29 @@ public class MainActivity extends Activity {
         c.setChecked(checked);
         c.setPadding(dp(2), dp(4), dp(2), dp(4));
         return c;
+    }
+
+    /**
+     * 带一行小字说明的选项。
+     * 小字缩进 34dp 对齐 CheckBox 标题文字，点小字等同于点方框（扩大可点区域）。
+     */
+    private CheckBox option(LinearLayout parent, String title, String hint, boolean checked) {
+        final CheckBox cb = check(title, checked);
+
+        LinearLayout block = new LinearLayout(this);
+        block.setOrientation(LinearLayout.VERTICAL);
+        block.addView(cb);
+
+        TextView tv = text(hint, 11, MUTED, false);
+        tv.setPadding(dp(34), 0, dp(6), dp(10));
+        tv.setLineSpacing(dp(2), 1f);
+        tv.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) { cb.toggle(); }
+        });
+        block.addView(tv);
+
+        parent.addView(block);
+        return cb;
     }
 
     private GradientDrawable panelDrawable(int color) {

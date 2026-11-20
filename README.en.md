@@ -198,7 +198,9 @@ already installed on your phone.
 
 ## Version
 
-`v1.0.0` · First release · Windows GUI + native Android app · engine v1.0.0
+`v1.1.0` · Inline hints under each option (tap the hint to toggle) · Windows GUI + native Android app · engine v1.1.0
+
+See [Releases](https://github.com/zy2755/splitpatch/releases) for the full history.
 
 ## License
 

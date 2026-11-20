@@ -59,7 +59,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import BinaryIO, Callable, Iterable, Iterator
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 TOOL_NAME = "SplitPatch · 集成包拆分器"
 
 # ZIP local file header: 签名/版本/标志/压缩方法/时间/日期/CRC/压缩大小/原始大小/名长/扩展长

@@ -167,7 +167,9 @@ python Android/build_apk.py
 
 ## 版本
 
-`v1.0.0` · 首次发布 · Windows GUI + 原生 Android App · 引擎 v1.0.0
+`v1.1.0` · 每个选项下加了小字说明（点小字也能切换）· Windows GUI + 原生 Android App · 引擎 v1.1.0
+
+历史版本见 [Releases](https://github.com/zy2755/splitpatch/releases)。
 
 ---
 

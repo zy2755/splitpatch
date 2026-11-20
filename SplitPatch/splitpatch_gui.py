@@ -85,7 +85,7 @@ class App:
     def build_ui(self) -> None:
         r = self.root
         r.title(f"SplitPatch · 集成包拆分器  v{sp.__version__}")
-        r.geometry("1020x740")  # 默认宽度下三个选项正好一行放得下；拉窄会自动换行
+        r.geometry("1120x740")  # 加了小字后块变宽，1120 下三个选项正好一行；拉窄会自动换行
         r.minsize(860, 620)
         r.configure(bg=BG)
 
@@ -122,22 +122,31 @@ class App:
         self.btn_auto = self.mkbutton(form, "自动", self.auto_output, small=True)
         self.btn_auto.grid(row=1, column=3, padx=(6, 12), pady=8)
 
-        # 选项区：宽度不够时自动换行。原先三个复选框硬排一行，
-        # 窗口没最大化 / 系统 DPI 放大字体后，最后一项会被父容器直接裁掉。
+        # 选项区：每个选项是「复选框 + 一行小字」的块，宽度不够时整块换行。
+        # 原先三个复选框硬排一行，窗口没最大化 / 系统 DPI 放大字体后，最后一项会被裁掉。
         opts = tk.Frame(form, bg=PANEL)
         opts.grid(row=2, column=0, columnspan=4, sticky="we", padx=14, pady=(2, 12))
         self.opt_frame = opts
+        self.opt_blocks: list[tk.Frame] = []
         self.opt_checks: list[tk.Checkbutton] = []
         self._opt_width: int | None = None
-        for text, var in [
-            ("生成 HTML 拆分报告", self.var_report),
-            ("一并导出注入组件（loader / so / config）", self.var_injected),
-            ("无原版时导出散文件（仅供分析）", self.var_payload),
+        for title, hint, var in [
+            ("生成 HTML 拆分报告", "结构、校验值、注入组件一页看完", self.var_report),
+            ("一并导出注入组件（loader / so / config）", "仅重新集成或研究补丁时需要", self.var_injected),
+            ("无原版时导出散文件（仅供分析）", "没有内嵌原版时逐条导出，便于排查", self.var_payload),
         ]:
-            cb = tk.Checkbutton(opts, text=text, variable=var, bg=PANEL, fg=FG,
+            block = tk.Frame(opts, bg=PANEL)
+            cb = tk.Checkbutton(block, text=title, variable=var, bg=PANEL, fg=FG,
                                 selectcolor="#2b3039", activebackground=PANEL,
                                 activeforeground=FG, font=FONT_SMALL, bd=0,
-                                highlightthickness=0)
+                                highlightthickness=0, anchor="w")
+            cb.pack(anchor="w")
+            tip = tk.Label(block, text=hint, font=FONT_SMALL, bg=PANEL, fg=MUTED,
+                           anchor="w", justify="left", cursor="hand2")
+            # 小字缩进约 18px，对齐复选框文字；点它等同于点方框
+            tip.pack(anchor="w", padx=(18, 0))
+            tip.bind("<Button-1>", lambda e, v=var: v.set(not v.get()))
+            self.opt_blocks.append(block)
             self.opt_checks.append(cb)
         opts.bind("<Configure>", self._relayout_opts)
         self.root.after_idle(self._relayout_opts)
@@ -235,10 +244,11 @@ class App:
         )
 
     def _relayout_opts(self, event=None):
-        """按当前宽度给复选框贪心分行，窗口再窄也不会被裁掉。
+        """按当前宽度给选项块贪心分行，窗口再窄也不会被裁掉。
 
         pack(side="left") 放不下时 tkinter 是直接裁切、不会换行；改用 grid，
         容器尺寸变化时重新算「这一行还能塞几个」。DPI 缩放把字体放大时也照样生效。
+        每个块含复选框和它下面那行小字，按块的整体宽度计算。
         """
         avail = self.opt_frame.winfo_width()
         if avail < 80:
@@ -249,9 +259,9 @@ class App:
 
         gap = 20
         widths = []
-        for cb in self.opt_checks:
-            cb.update_idletasks()
-            widths.append(max(120, cb.winfo_reqwidth()))  # 纯控件宽，间隔单独算
+        for block in self.opt_blocks:
+            block.update_idletasks()
+            widths.append(max(150, block.winfo_reqwidth()))  # 纯控件宽，间隔单独算
 
         rows: list[list[int]] = []
         cur: list[int] = []
@@ -267,12 +277,12 @@ class App:
         if cur:
             rows.append(cur)
 
-        for cb in self.opt_checks:
-            cb.grid_forget()
+        for block in self.opt_blocks:
+            block.grid_forget()
         for r, row in enumerate(rows):
             for c, idx in enumerate(row):
-                self.opt_checks[idx].grid(row=r, column=c, sticky="w",
-                                         padx=(0, gap), pady=(0, 3))
+                self.opt_blocks[idx].grid(row=r, column=c, sticky="w",
+                                          padx=(0, gap), pady=(0, 4))
 
     # -----------------------------------------------------------------------
     # 交互
